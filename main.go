@@ -12,7 +12,7 @@ type TSConfig struct {
 	Url string
 }
 
-func getTSSource(config TSConfig) string {
+func GetTSSource(config TSConfig) string {
 	var tsInfoData = TSInfo{}
 	var tsSoucesData = TSSouces{}
 	tsInfoData.Populate()
