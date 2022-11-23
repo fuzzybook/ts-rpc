@@ -8,11 +8,17 @@ import (
 	"text/template"
 )
 
+// configuration
+
 type TSConfig struct {
-	Url string
+	Url   string
+	TsApi string
 }
 
+var tsConfig TSConfig
+
 func GetTSSource(config TSConfig) string {
+	tsConfig = config
 	var tsInfoData = TSInfo{}
 	var tsSoucesData = TSSouces{}
 	tsInfoData.Populate()
@@ -29,9 +35,9 @@ func GetTSSource(config TSConfig) string {
 	tsSource := ""
 	tsSource += fmt.Sprintln("\n// Api Class")
 
-	dat, err := os.ReadFile("typescript/sources/fetch.ts")
+	data, err := os.ReadFile(tsConfig.TsApi)
 	if err == nil {
-		t, err := template.New("tsRpc").Parse(string(dat))
+		t, err := template.New("tsRpc").Parse(string(data))
 		if err != nil {
 			panic(err)
 		}
