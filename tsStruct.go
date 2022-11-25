@@ -43,7 +43,6 @@ func toBeImported(t ast.Expr) bool {
 		return !isNativeType(ft.Name)
 	case *ast.SelectorExpr:
 		return true
-
 	}
 	return false
 }
@@ -99,7 +98,7 @@ func getFieldTsInfo(t ast.Expr) string {
 	case *ast.InterfaceType:
 		result = "unknown"
 	default:
-		exitOnError(errors.New(fmt.Sprintf("this typescript type: %T is not evaluated!\n", ft)))
+		exitOnError(errors.New(fmt.Sprintf("getFieldTsInfo can't evaluate type: %T !\n", ft)))
 	}
 	return result
 }
@@ -157,7 +156,23 @@ func (s *TSStruct) getStruct(ts *ast.TypeSpec, src []TSSourceFile) {
 					}
 					s.Fields = append(s.Fields, f)
 				} else {
-					exitOnError(errors.New(fmt.Sprintf("this typescript type: %T is not evaluated!\n", field.Type)))
+					if se, ok := field.Type.(*ast.Ident); ok {
+						fmt.Println(se)
+						var f = TSSField{
+							Name:       se.Name,
+							Json:       tagJson,
+							Ts:         tagTs,
+							Type:       se.Name,
+							TsType:     tsType,
+							DependOn:   false,
+							SourceInfo: getSourceInfo(int(field.Type.Pos()), src),
+						}
+						s.Fields = append(s.Fields, f)
+
+						fmt.Println(f)
+					} else {
+						exitOnError(errors.New(fmt.Sprintf("this typescript type: %T is not evaluated!\n", field.Type)))
+					}
 				}
 			}
 		}
