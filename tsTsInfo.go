@@ -65,7 +65,8 @@ func structToTs(info TSInfo, p string, k string) (string, []string, error) {
 		result += fmt.Sprintf("\nexport interface %s {\n", k)
 
 		for _, v := range info.Packages[p].structs[k].Fields {
-			if v.Json.Ignore {
+
+			if v.Json.Ignore && !v.Ts.Expand {
 				continue
 			}
 			var typeName = v.TsType
@@ -74,7 +75,13 @@ func structToTs(info TSInfo, p string, k string) (string, []string, error) {
 			}
 			if v.Ts.Expand {
 				sp := strings.Split(v.Name, ".")
-				for _, v := range info.Packages[sp[0]].structs[sp[1]].Fields {
+				pkg := p
+				name := v.Name
+				if len(sp) > 1 {
+					pkg = sp[0]
+					name = sp[1]
+				}
+				for _, v := range info.Packages[pkg].structs[name].Fields {
 					result += fmt.Sprintf("\t%s: %s;\n", v.Name, v.TsType)
 					fields++
 				}
