@@ -6,13 +6,20 @@ import (
 	"fmt"
 	"os"
 	"text/template"
+	"time"
 )
 
 // configuration
 
 type TSConfig struct {
 	Url   string
-	TsApi string
+	TsApi *string
+	Path  string
+}
+
+type tsTemplateData struct {
+	Url       string
+	CreatedOn time.Time
 }
 
 var tsConfig TSConfig
@@ -21,7 +28,7 @@ func GetTSSource(config TSConfig) string {
 	tsConfig = config
 	var tsInfoData = TSInfo{}
 	var tsSoucesData = TSSouces{}
-	tsInfoData.Populate()
+	tsInfoData.Populate(tsConfig.Path)
 	tsSoucesData.Populate(tsInfoData)
 
 	if len(tsSoucesData.Errors) != 0 {
@@ -34,20 +41,31 @@ func GetTSSource(config TSConfig) string {
 
 	tsSource := ""
 	tsSource += fmt.Sprintln("\n// Api Class")
-
-	data, err := os.ReadFile(tsConfig.TsApi)
-	if err == nil {
-		t, err := template.New("tsRpc").Parse(string(data))
+	data := ""
+	if tsConfig.TsApi == nil {
+		data = TsApiTemplate
+	} else {
+		d, err := os.ReadFile(*tsConfig.TsApi)
 		if err != nil {
 			panic(err)
 		}
-		var result bytes.Buffer
-		err = t.Execute(&result, config)
-		if err != nil {
-			panic(err)
-		}
-		tsSource += result.String()
+		data = string(d)
 	}
+
+	t, err := template.New("tsRpc").Parse(data)
+	if err != nil {
+		panic(err)
+	}
+	var templateData = tsTemplateData{
+		Url:       config.Url,
+		CreatedOn: time.Now(),
+	}
+	var result bytes.Buffer
+	err = t.Execute(&result, templateData)
+	if err != nil {
+		panic(err)
+	}
+	tsSource += result.String()
 
 	tsSource += fmt.Sprintln("\n// Global Declarations ")
 	for p := range tsSoucesData.Pakages {
