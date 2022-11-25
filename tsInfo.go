@@ -237,9 +237,9 @@ func (i *TSInfo) getType(p string, t *doc.Type, src []TSSourceFile) {
 	}
 }
 
-func (i *TSInfo) Populate() {
+func (i *TSInfo) Populate(path string) {
 	i.Packages = make(map[string]TSInfoPakage)
-	err := filepath.Walk(".",
+	err := filepath.Walk(path,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
