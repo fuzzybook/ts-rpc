@@ -18,14 +18,13 @@ func (t *TSTagTs) parse(tag string) bool {
 		return false
 	}
 	s := strings.Split(match[1], ",")
-
 	for _, v := range s {
 		t.Expand = strings.Trim(v, " ") == "expand"
 		if t.Expand {
 			return true
 		}
 		if strings.Contains(v, "type=") {
-			t.Type = string(v[len("type="):len(string(v))])
+			t.Type = string(match[1][len("type="):len(string(match[1]))])
 		}
 	}
 	return true
