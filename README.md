@@ -4,84 +4,51 @@
 
 ---
 
-#####The ghost bridge from front-end to backend
+##### The ghost bridge from front-end to backend
 
-this project is a POC - Proof of concept
-the goal is to generate typescript code from golang code using AST
-using intellisense in the development IDE
+This project is a POC - Proof of concept.
+The goal is to generate typescript code from golang using AST.
+So you can use intellisense in the development IDE.
 
-```typescript
-const input = <server.FormRequest>{ req: "some request", count: 456 };
-const { data, error } = await server.postTest(input);
-if (!error) {
-  console.log(data);
-  result = data.test;
-}
-```
+## ![itellisense!](docs/intelliesense01.png "front end intellisense")
 
-golang declaration
+---
 
-```golang
-// Typescript: TSDeclaration= Nullable<T> = T | null;
-// Typescript: TSDeclaration= Record<K extends string | number | symbol, T> = { [P in K]: T; }
+[Golang types traslation](docs/TsGoTypes.md)
 
-// Typescript: interface
-type HTTPResponse struct {
-	Data  interface{} `json:"data"`
-	Error interface{} `json:"error"`
-}
+[Typescript: TSDeclaration](docs/TsDeclaration.md)
 
-// Typescript: interface
-type FormRequest struct {
-	Req   string `json:"req"`
-	Count int    `json:"count"`
-}
+[Typescript: TStype](docs/TsType.md)
 
-// Typescript: interface
-type FormResponse struct {
-	Test string `json:"test"`
-}
+[Typescript: interface](docs/TsInterface.md)
+[Struct tags](docs/TsTags.md)
 
-// Typescript: TSEndpoint= path=/postTest;  name=postTest; method=POST; request=FormRequest; response=FormResponse
-r.POST("/postTest", func(c *gin.Context) {
-    var requestBody FormRequest
-    if err := c.BindJSON(&requestBody); err != nil {
-        response := HTTPResponse{Data: nil, Error: "wrongData"}
-        c.JSON(http.StatusOK, response)
-    }
-    response := HTTPResponse{Data: FormResponse{Test: fmt.Sprintf("%d", requestBody.Count)}, Error: nil}
-    c.JSON(http.StatusOK, response)
-})
-```
+[Typescript: TsEndpoint](docs/TsEndpoint.md)
 
-generated code
+[Typescript: const](docs/TsConst.md)
 
-```typescript
-//
-// namespace server
-//
+[Typescript: enum](docs/TsEnum.md)
 
-export namespace server {
-  export interface FormRequest {
-    req: string;
-    count: number;
-  }
+---
 
-  export interface FormResponse {
-    test: string;
-  }
+#### Server Examle
 
-  export interface HTTPResponse {
-    data: unknown;
-    error: unknown;
-  }
+[server examle](docs/TsExportEndpoints.md)
 
-  // Typescript: TSEndpoint= path=/postTest;  name=postTest; method=POST; request=FormRequest; response=FormResponse
-  // server/server.go Line: 73
-  export const postTest = async (data: FormRequest): Promise<{ data: FormResponse; error: Nullable<string> }> => {
-    return (await api.POST("/postTest", data)) as { data: FormResponse; error: Nullable<string> };
-  };
-}
-```
+---
 
-[fetch code](TsFetch.md)
+#### Can I use it/contribute?
+
+Sure, but you should probably start your own from scratch. I built this in about one week and it was an interesting experience, I recommend you do the same. My goal was never to make good or reusable code, so it's neither good nor reusable. If you do decide to work on such a system, I would suggest adding the following:
+
+- Talk about ghost bridge over all the world
+- Suggest some ideas
+- Develop good reusable code
+- Add tests, comments and GoDoc
+- Be Happy
+
+#### Alright then...
+
+Cool. I'm on linkedin Golang nuts group https://www.linkedin.com/groups/3712244/
+My linkedin page: https://www.linkedin.com/in/fabio-prada-a9159b75/
+Discord channel #tsrpc: https://discord.com/channels/1046004205556617237/1046004333734531092
