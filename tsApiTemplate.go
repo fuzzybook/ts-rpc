@@ -1,3 +1,6 @@
+// exportable typescript generated from golang
+// Copyright (C) 2022  Fabio Prada
+
 package tsrpc
 
 const TsApiTemplate = `
