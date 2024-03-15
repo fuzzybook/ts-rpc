@@ -52,3 +52,6 @@ Sure, but you should probably start your own from scratch. I built this in about
 Cool. I'm on linkedin Golang nuts group https://www.linkedin.com/groups/3712244/
 My linkedin page: https://www.linkedin.com/in/fabio-prada-a9159b75/
 Discord channel #tsrpc: https://discord.com/channels/1046004205556617237/1046004333734531092
+
+ciao
+
